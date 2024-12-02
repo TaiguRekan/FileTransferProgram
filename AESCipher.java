@@ -1,6 +1,8 @@
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.IvParameterSpec;
+import java.nio.ByteBuffer;
+import java.util.Arrays;
 
 public class AESCipher extends BaseCipher {
 
@@ -17,10 +19,10 @@ public class AESCipher extends BaseCipher {
         byte[] encryptedBytes = cipher.doFinal(data);
 
         // Объединяем IV и зашифрованные данные
-        byte[] encryptedData = new byte[iv.length + encryptedBytes.length];
-        System.arraycopy(iv, 0, encryptedData, 0, iv.length);
-        System.arraycopy(encryptedBytes, 0, encryptedData, iv.length, encryptedBytes.length);
-        return encryptedData;
+        return ByteBuffer.allocate(iv.length + encryptedBytes.length)
+                .put(iv)
+                .put(encryptedBytes)
+                .array();
     }
 
     @Override
